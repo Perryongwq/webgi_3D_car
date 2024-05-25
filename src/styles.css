@@ -12,7 +12,6 @@ body {
   margin: 0;
   padding: 0;
   overscroll-behavior: none;
-
   box-sizing: border-box;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
@@ -67,7 +66,6 @@ body {
   font-size: 3vw;
 }
 
-
 main {
   overflow-y: scroll;
   overflow-x: hidden;
@@ -89,28 +87,9 @@ section {
   height: 100%;
   position: fixed;
   top: 0;
-
   pointer-events: none;
   z-index: -1;
 }
-
-@media (max-width: 599px) and (orientation: portrait) {
-  .rotation {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1rem;
-  }
-}
-
-@media (min-width: 600px) and (max-width: 899px) and (orientation: portrait) {
-  .rotation {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-}
-
 
 .first {
   display: flex;
@@ -124,9 +103,7 @@ section {
   display: flex;
   flex-direction: column;
   align-items: center;
-
   height: fit-content;
-  /* margin-top: 8%; */
   position: relative;
 }
 
@@ -180,6 +157,7 @@ section {
   font-family: "Orbitron", sans-serif;
   color: var(--red);
 }
+
 .value--wrapper .unit {
   font-size: 1vw;
   margin: 0 5px;
@@ -188,7 +166,6 @@ section {
   color: var(--lightBlack);
 }
 
-
 .second {
   display: flex;
   justify-content: space-between;
@@ -196,25 +173,24 @@ section {
   margin: auto;
 }
 
-.section--two--container1{
+.section--two--container1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: var(--red)
- 
+  color: var(--red);
 }
+
 .leftSide {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-left: 20px;
-
 }
 
 .section--three--container {
   display: flex;
   flex-direction: column;
-  width: 40%;   
+  width: 40%;
 }
 
 .rightSide {
@@ -223,14 +199,14 @@ section {
   align-items: center;
   margin: auto;
 }
+
 .section--four--container {
   display: flex;
   flex-direction: column;
-
   width: 30%;
   margin-right: 10%;
-
 }
+
 .six {
   position: relative;
 }
@@ -240,8 +216,6 @@ section {
   flex-direction: column;
   width: 30%;
   padding-bottom: 50px;
-  
-
 }
 
 .title {
@@ -261,8 +235,6 @@ section {
   font-weight: 200;
 }
 
-
-
 footer {
   background: var(--black);
   padding: 20px;
@@ -271,7 +243,6 @@ footer {
   align-items: center;
   position: absolute;
   bottom: 0;
-
   width: 100%;
 }
 
@@ -297,7 +268,7 @@ footer > a {
   color: white;
 }
 
-.my-button{
+.my-button {
   background: white;
   color: black;
   border: none;
@@ -329,4 +300,113 @@ footer > a {
 .linkedin-button:hover {
   background: black;
   color: white;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 599px) and (orientation: portrait) {
+  .nav--bar {
+    font-size: 6vw;
+  }
+
+  .first h1 {
+    font-size: 8vw;
+  }
+
+  .first p {
+    font-size: 4vw;
+  }
+
+  .section--one--container2 {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .spec--wrapper .name, .value--wrapper .value {
+    font-size: 4vw;
+  }
+
+  .value--wrapper .unit {
+    font-size: 2vw;
+  }
+
+  .title {
+    font-size: 8vw;
+  }
+
+  .detail {
+    font-size: 4vw;
+    line-height: 5vw;
+  }
+}
+
+@media (max-width: 899px) and (orientation: landscape) {
+  .nav--bar {
+    font-size: 5vw;
+  }
+
+  .first h1 {
+    font-size: 6vw;
+  }
+
+  .first p {
+    font-size: 3vw;
+  }
+
+  .section--one--container2 {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .spec--wrapper .name, .value--wrapper .value {
+    font-size: 3vw;
+  }
+
+  .value--wrapper .unit {
+    font-size: 1.5vw;
+  }
+
+  .title {
+    font-size: 6vw;
+  }
+
+  .detail {
+    font-size: 3vw;
+    line-height: 4vw;
+  }
+}
+
+@media (min-width: 900px) {
+  .nav--bar {
+    font-size: 2vw;
+  }
+
+  .first h1 {
+    font-size: 4vw;
+  }
+
+  .first p {
+    font-size: 1.5vw;
+  }
+
+  .section--one--container2 {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .spec--wrapper .name, .value--wrapper .value {
+    font-size: 1.5vw;
+  }
+
+  .value--wrapper .unit {
+    font-size: 1vw;
+  }
+
+  .title {
+    font-size: 3vw;
+  }
+
+  .detail {
+    font-size: 1.5vw;
+    line-height: 2vw;
+  }
 }
