@@ -239,6 +239,8 @@ section {
   display: flex;
   flex-direction: column;
   width: 30%;
+  padding-bottom: 50px;
+  
 
 }
 
@@ -258,6 +260,9 @@ section {
   color: var(--black);
   font-weight: 200;
 }
+
+
+
 
 
 footer {
