@@ -2,29 +2,124 @@
 <html lang="en">
 
 <head>
+    <title>
+        Webgi 3D Carousel
+    </title>
+
+    <meta name="description" content="Threejs Practice Project WEBGi">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Threejs Practice Project using WEBGi">
+    <meta property="og:description" content="Threejs Practice Project using WEBGi">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="keywords" content="HTML, CSS, JavaScript">
+    <meta name="author" content="Perry Ong">
+    <meta name="msapplication-TileColor" content="#F9F9F9">
+    <meta name="theme-color" content="#F9F9F9">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Orbitron:wght@600;700;800;900&display=swap"
+        rel="stylesheet" />
 </head>
 
-<body>
-	<div id="webgi-canvas-container">
-		<canvas id="webgi-canvas"></canvas>
-	</div>
+<body class>
+    <canvas id="webgi-canvas"></canvas>
+    <div class="rotation">
+    </div>
+    <div class="loader">
+        <p>Loading... Please wait</p>
+        <div class="progress"></div>
+    </div>
 
-	<div class="loader">
-		<p>Loading... Please wait</p>
-		<div class="progress"></div>
-	  </div>
-	
-	<main class="mainContainer">
-		<section class="first">1</section>
-		<section class="second">2</section>
-		<section class="third">3</section>
-		<section class="four">4</section>
-		<section class="five">5</section>
-		<section class="six">6</section>
+    <main class="mainContainer">
+        <section class="section first">
+            <div class="section--one--container1">
+                <nav class="nav--bar">
+                    Ford Mustang 1965
+                </nav>
+                <p>Experience the Legend: 1965 Ford Mustang- where Classic Meets Iconic</p>
+            </div>
+            <div class="section--one--container2">
+                <div class="spec--wrapper">
+                    <div class="name">Top Speed</div>
+                    <div class="value--wrapper">
+                        <div class="value">193</div>
+                        <div class="unit">KM/h</div>
+                    </div>
+                </div>
+                <div class="spec--wrapper">
+                    <div class="name">Power</div>
+                    <div class="value--wrapper">
+                        <div class="value">195hp @ 4,600rpm</div>
+                    </div>
+                </div>
 
-	</main>
+                <div class="spec--wrapper">
+                    <div class="name">Engine</div>
+                    <div class="value--wrapper">
+                        <div class="value">4.7L Windsor V8</div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-	<script src="src/index.js" type="module"></script>
+        <section class="section second">
+            <div class="section--two--container1">
+                <h1>Power.</h1>
+                <h1>Speed.</h1>
+                <h1>Beautiful.</h1>
+            </div>
+        </section>
+
+        <section class="section third leftSide">
+            <div class="section--three--container">
+				<h1 class="title">1965 Ford Mustang</h1>
+				<p class="detail">
+					The 1965 Ford Mustang is a legendary American muscle car known for its powerful performance and classic design. 
+					Featuring a robust 4.7L Windsor V8 engine, this car was built for speed and style. Its iconic silhouette, marked by 
+					the long hood and short rear deck, has become a symbol of automotive excellence. With a top speed of 193 KM/h and 
+					a distinctive roar, the 1965 Mustang continues to captivate car enthusiasts and collectors worldwide. This section 
+					celebrates the timeless appeal and enduring legacy of the original pony car.
+				</p>
+            </div>
+        </section>
+        <section class="section four rightSide">
+            <div class="section--four--container">
+                <h1 class="title">Design Summary</h1>
+                <p class="detail">
+                    The 1965 Ford Mustang embodies the spirit of American muscle cars. With its aggressive stance, iconic
+                    fastback design, and powerful V8 engine, the Mustang delivers an exhilarating driving experience. The
+                    sleek lines and bold grille contribute to its timeless appeal, making it a symbol of performance and
+                    style.
+                </p>
+            </div>
+        </section>
+        <section class="section six leftSide">
+            <div class="section--six--container">
+                <h1 class="title">Racing Heritage</h1>
+                <p class="detail">
+					The Ford Mustang has a rich racing heritage, having competed in various motorsport events around the world.
+                    From its early days in Trans-Am racing to its modern GT variants, the Mustang has always been a formidable
+                    competitor. 
+                </p>
+            </div>
+
+            <footer>
+                <a href="https://sketchfab.com/3d-models/ford-mustang-1965-5f4e3965f79540a9888b5d05acea5943">Model By Pooya_dh</a>
+                <button class="button--footer">BACK TO TOP</button>
+				<a href="https://perryongwq.github.io/Personal/" class="my-button">Visit My Portfolio</a>
+                <a href="https://www.linkedin.com/in/wen-qing-ong/" target="_blank" rel="noopener noreferrer" class="linkedin-button">
+                    <object type="image/svg+xml" data="assets/linkedin.svg" width="24" height="24">
+                    </object>
+                    LinkedIn
+                </a>
+            </footer>
+
+        </section>
+    </main>
+
+    <script src="src/index.js" type="module"></script>
 </body>
 
 </html>
