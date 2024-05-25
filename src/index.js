@@ -7,14 +7,11 @@ import {
     SSAOPlugin,
     BloomPlugin,
     TonemapPlugin,
-
 } from "webgi";
 import "./styles.css";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-// import { Pane } from "tweakpane";
 import { DirectionalLight, AmbientLight } from "three";
-
 
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.defaults({ scroller: ".mainContainer" });
@@ -27,324 +24,275 @@ async function setupViewer() {
   });
   viewer.renderer.displayCanvasScaling = Math.min(window.devicePixelRatio, 1);
 
-// to use the tweakpane function
-    // const data = {
-    //     position: { x: 0, y: 0, z: 0 },
-    //     rotation: { x: 0, y: 0, z: 0 },
-    // };
-    // const pane = new Pane();
+  const manager = await viewer.addPlugin(AssetManagerPlugin);
+  const camera = viewer.scene.activeCamera;
 
+  await viewer.addPlugin(GBufferPlugin);
+  await viewer.addPlugin(new ProgressivePlugin(32));
+  await viewer.addPlugin(SSRPlugin);
+  await viewer.addPlugin(SSAOPlugin);
+  await viewer.addPlugin(BloomPlugin);
+  const tonemapPlugin = await viewer.addPlugin(TonemapPlugin);
 
-    const manager = await viewer.addPlugin(AssetManagerPlugin);
-    const camera = viewer.scene.activeCamera;
+  const directionalLight = new DirectionalLight(0xffffff, 1.5);
+  directionalLight.position.set(5, 5, 5);
+  viewer.scene.add(directionalLight);
 
-// add plugins 
-// GBufferPlugin: For better handling of geometries and materials.
-// ProgressivePlugin: For progressive rendering.
-// TonemapPlugin: For better tone mapping.
-// SSRPlugin: For screen space reflections.
-// SSAOPlugin: For screen space ambient occlusion.
-// BloomPlugin: For bloom effects.
+  const ambientLight = new AmbientLight(0x404040, 4);
+  viewer.scene.add(ambientLight);
 
-    await viewer.addPlugin(GBufferPlugin);
-    await viewer.addPlugin(new ProgressivePlugin(32));
-    await viewer.addPlugin(SSRPlugin);
-    await viewer.addPlugin(SSAOPlugin);
-    await viewer.addPlugin(BloomPlugin);
-    const tonemapPlugin = await viewer.addPlugin(TonemapPlugin);
+  const importer = manager.importer;
+  importer.addEventListener("onProgress", (ev) => {
+    const progressRatio = ev.loaded / ev.total;
+    document.querySelector(".progress")?.setAttribute("style", `transform: scaleX(${progressRatio})`);
+  });
 
-    
-    // tonemapPlugin.config.brightness = 2.0;
-    // tonemapPlugin.config.contrast = -1.5;
+  importer.addEventListener("onLoad", (ev) => {
+    introAnimation();
+  });
 
-    const directionalLight = new DirectionalLight(0xffffff, 1.5);  // Color and intensity
-    directionalLight.position.set(5, 5, 5);  // Position of the light source
-    viewer.scene.add(directionalLight);
+  viewer.renderer.refreshPipeline();
+  const model = await manager.addFromPath("./assets/scene.glb");
+  const Object3d = model[0].modelObject;
+  const modelPosition = Object3d.position;
+  const modelRotation = Object3d.rotation;
 
-    const ambientLight = new AmbientLight(0x404040 , 4);  // Color and intensity
-    viewer.scene.add(ambientLight);
+  const loaderElement = document.querySelector(".loader");
 
-
-
-// // to use all the plugins at once
-//     await addBasePlugins(viewer);
-
-// pane.addBinding(data, "position", {
-//     x: { step: 0.01 },
-//     y: { step: 0.01 },
-//     z: { step: 0.01 },
-// });
-// pane.addBinding(data, "rotation", {
-//     x: { min: -6.28319, max: 6.28319, step: 0.001 },
-//     y: { min: -6.28319, max: 6.28319, step: 0.001 },
-//     z: { min: -6.28319, max: 6.28319, step: 0.001 },
-// });
-
-// pane.on('change', (ev) => {
-//     if (ev.presetKey === 'rotation') {
-//         const { x, y, z } = ev.value;
-//         modelRotation.set(x, y, z);
-//     } else {
-//         const { x, y, z } = ev.value;
-//         modelPosition.set(x, y, z);
-//     }
-//     onUpdate();
-// });
-
-    const importer = manager.importer;
-    importer.addEventListener("onProgress", (ev) => {
-        const progressRatio = ev.loaded / ev.total;
-        document
-          .querySelector(".progress")
-          ?.setAttribute("style", `transform: scaleX(${progressRatio})`);
+  function introAnimation() {
+    const introTL = gsap.timeline();
+    introTL
+      .to(".loader", {
+        x: "150%",
+        duration: 0.8,
+        ease: "power4.inOut",
+        delay: 1,
+        onComplete: () => {
+          document.querySelector(".mainContainer").classList.remove("hidden");
+          setupScrollAnimation();
+        },
       });
-    
-      importer.addEventListener("onLoad", (ev) => {
-        introAnimation();
+  }
+
+  function setupScrollAnimation() {
+    document.body.removeChild(loaderElement);
+
+    const t1 = gsap.timeline();
+    t1.to(modelPosition, {
+      x: 0,
+      y: 0,
+      z: 0,
+      scrollTrigger: {
+        trigger: ".first",
+        start: "top top",
+        end: "top top",
+        scrub: 0.2,
+        immediateRender: false,
+      },
+      onUpdate,
+    })
+      .to(modelPosition, {
+        x: 0.0,
+        y: 0.18,
+        z: -0.22,
+        scrollTrigger: {
+          trigger: ".second",
+          start: "top bottom",
+          end: "top top",
+          scrub: 0.2,
+          immediateRender: false,
+        },
+        onUpdate,
+      })
+      .to(modelRotation, {
+        x: 0.0,
+        y: 0.0,
+        z: -1.57,
+        scrollTrigger: {
+          trigger: ".second",
+          start: "top bottom",
+          end: "top top",
+          scrub: 0.2,
+          immediateRender: false,
+        },
+      })
+      .to(modelPosition, {
+        x: 0.5,
+        y: -0.11,
+        z: -1.06,
+        scrollTrigger: {
+          trigger: ".third",
+          start: "top bottom",
+          end: "top top",
+          scrub: 0.2,
+          immediateRender: false,
+        },
+        onUpdate,
+      })
+      .to(modelRotation, {
+        x: 0.403,
+        y: 0.957,
+        z: -0.421,
+        scrollTrigger: {
+          trigger: ".third",
+          start: "top bottom",
+          end: "top top",
+          scrub: 0.2,
+          immediateRender: false,
+        },
+      })
+      .to(modelPosition, {
+        x: 0.8,
+        y: -0.6,
+        z: 0.66,
+        scrollTrigger: {
+          trigger: ".four",
+          start: "top bottom",
+          end: "top top",
+          scrub: 0.2,
+          immediateRender: false,
+        },
+        onUpdate,
+      })
+      .to(modelRotation, {
+        x: 0.0,
+        y: 1.67,
+        z: 0,
+        scrollTrigger: {
+          trigger: ".four",
+          start: "top bottom",
+          end: "top top",
+          scrub: 0.2,
+          immediateRender: false,
+        },
+      })
+      .to(modelPosition, {
+        x: 0.16,
+        y: -0.3,
+        z: -0.56,
+        scrollTrigger: {
+          trigger: ".six",
+          start: "top bottom",
+          end: "top top",
+          scrub: 0.2,
+          immediateRender: false,
+        },
+        onUpdate,
+      })
+      .to(modelRotation, {
+        x: -0.261,
+        y: 4.911,
+        z: -0.277,
+        scrollTrigger: {
+          trigger: ".six",
+          start: "top bottom",
+          end: "top top",
+          scrub: 0.2,
+          immediateRender: false,
+        },
+      })
+      .to(".section--one--container1", {
+        opacity: 0,
+        scrollTrigger: {
+          trigger: ".section--one--container1",
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+          immediateRender: false,
+        },
+      })
+      .to(".section--one--container2", {
+        opacity: 0,
+        scrollTrigger: {
+          trigger: ".second",
+          start: "top bottom",
+          end: "top center",
+          scrub: true,
+          immediateRender: false,
+        },
+      })
+      .to(".section--two--container1", {
+        scrollTrigger: {
+          trigger: ".section--two--container1",
+          start: "top 80%",
+          end: "bottom center",
+          toggleClass: "activeRightSpecific",
+          scrub: true,
+        },
+      })
+      .to(".section--two--container2", {
+        scrollTrigger: {
+          trigger: ".section--two--container2",
+          start: "top 80%",
+          end: "bottom center",
+          toggleClass: "resetPosition",
+          scrub: true,
+        },
+      })
+      .to(".section--three--container", {
+        scrollTrigger: {
+          trigger: ".section--three--container",
+          start: "top 80%",
+          end: "bottom center",
+          toggleClass: "resetPosition",
+          scrub: true,
+        },
+      })
+      .to(".section--four--container", {
+        scrollTrigger: {
+          trigger: ".section--four--container",
+          start: "top 80%",
+          end: "bottom center",
+          toggleClass: "resetPosition",
+          scrub: true,
+        },
+      })
+      .to(".section--six--container ", {
+        scrollTrigger: {
+          trigger: ".section--six--container ",
+          start: "top 80%",
+          end: "bottom center",
+          toggleClass: "resetPosition",
+          scrub: true,
+        },
       });
+    console.log("setupScrollAnimation");
+  }
 
+  let needsUpdate = true;
+  function onUpdate() {
+    needsUpdate = true;
+    viewer.renderer.resetShadows();
+    viewer.setDirty();
+  }
 
-    // Import and add a GLB file.
-    viewer.renderer.refreshPipeline();
-    const model = await manager.addFromPath("./assets/scene.glb");
-    const Object3d = model[0].modelObject;
-    const modelPosition = Object3d.position;
-    const modelRotation = Object3d.rotation;
+  function adjustModelScale() {
+    const width = window.innerWidth;
+    console.log(`Window width: ${width}`); // Debugging log
 
-    const loaderElement = document.querySelector(".loader");
-
-    // // Disable shadows for the model
-    // Object3d.traverse((child) => {
-    //     if (child.isMesh) {
-    //         child.castShadow = false;
-    //         child.receiveShadow = false;
-    //     }
-    // });
-    
-    function introAnimation() {
-        const introTL = gsap.timeline();
-        introTL
-          .to(".loader", {
-            x: "150%",
-            duration: 0.8,
-            ease: "power4.inOut",
-            delay: 1,
-            onComplete: () => {
-              document.querySelector(".mainContainer").classList.remove("hidden");
-              setupScrollAnimation();
-            }
-          })
-      }
-
-
-    function setupScrollAnimation() {
-        document.body.removeChild(loaderElement);
-        
-        const t1 = gsap.timeline();
-        t1.to(modelPosition, {
-            x: 0,
-            y: 0,
-            z: 0,
-            scrollTrigger: {
-                trigger: ".first",
-                start: "top top",
-                end: "top top",
-                scrub: 0.2,
-                immediateRender: false,
-            },
-            onUpdate,
-        })
-            // n0.2 
-            .to(modelPosition, {
-                x: 0.0,
-                y: 0.18,
-                z: -0.22,
-                scrollTrigger: {
-                    trigger: ".second",
-                    start: "top bottom",
-                    end: "top top",
-                    scrub: 0.2,
-                    immediateRender: false,
-                },
-                onUpdate,
-            })
-            .to(modelRotation, {
-                x: 0.0,
-                y: 0.0,
-                z: -1.57,
-                scrollTrigger: {
-                    trigger: ".second",
-                    start: "top bottom",
-                    end: "top top",
-                    scrub: 0.2,
-                    immediateRender: false,
-                },
-            })
-            // no.3
-            
-            .to(modelPosition, {
-                x: 0.5,
-                y: -0.11,
-                z: -1.06,
-                scrollTrigger: {
-                    trigger: ".third",
-                    start: "top bottom",
-                    end: "top top",
-                    scrub: 0.2,
-                    immediateRender: false,
-                },
-                onUpdate,
-            })
-            .to(modelRotation, {
-                x: 0.403,
-                y: 0.957,
-                z: -0.421,
-                scrollTrigger: {
-                    trigger: ".third",
-                    start: "top bottom",
-                    end: "top top",
-                    scrub: 0.2,
-                    immediateRender: false,
-                },
-            })
-            // no.4
-            .to(modelPosition, {
-                x: 0.8,
-                y: -0.6,
-                z: 0.66,
-                scrollTrigger: {
-                    trigger: ".four",
-                    start: "top bottom",
-                    end: "top top",
-                    scrub: 0.2,
-                    immediateRender: false,
-                },
-                onUpdate,
-            })
-            .to(modelRotation, {
-                x: 0.0,
-                y: 1.67,
-                z: 0,
-                scrollTrigger: {
-                    trigger: ".four",
-                    start: "top bottom",
-                    end: "top top",
-                    scrub: 0.2,
-                    immediateRender: false,
-                },
-            })
-            .to(modelPosition, {
-                x: 0.16,
-                y: -0.3,
-                z: -0.56,
-                scrollTrigger: {
-                    trigger: ".six",
-                    start: "top bottom",
-                    end: "top top",
-                    scrub: 0.2,
-                    immediateRender: false,
-                },
-                onUpdate,
-            })
-            .to(modelRotation, {
-                x: -0.261,
-                y: 4.911,
-                z: -0.277,
-                scrollTrigger: {
-                    trigger: ".six",
-                    start: "top bottom",
-                    end: "top top",
-                    scrub: 0.2,
-                    immediateRender: false,
-                },
-            })
-            .to(".section--one--container1", {
-                opacity: 0,
-                scrollTrigger: {
-                  trigger: ".section--one--container1",
-                  start: "top top",
-                  end: "bottom top",
-                  scrub: true,
-                  immediateRender: false,
-                },
-              })
-        
-              .to(".section--one--container2", {
-                opacity: 0,
-                scrollTrigger: {
-                  trigger: ".second",
-                  start: "top bottom",
-                  end: "top center",
-                  scrub: true,
-                  immediateRender: false,
-                },
-              })
-              .to(".section--two--container1", {
-                scrollTrigger: {
-                  trigger: ".section--two--container1",
-                  start: "top 80%",
-                  end: "bottom center",
-                  toggleClass: "activeRightSpecific",
-                  scrub: true,
-                },
-              })
-              .to(".section--two--container2", {
-                scrollTrigger: {
-                  trigger: ".section--two--container2",
-                  start: "top 80%",
-                  end: "bottom center",
-                  toggleClass: "resetPosition",
-                  scrub: true,
-                },
-              })
-              .to(".section--three--container", {
-                scrollTrigger: {
-                  trigger: ".section--three--container",
-                  start: "top 80%",
-                  end: "bottom center",
-                  toggleClass: "resetPosition",
-                  scrub: true,
-                },
-              })
-              .to(".section--four--container", {
-                scrollTrigger: {
-                  trigger: ".section--four--container",
-                  start: "top 80%",
-                  end: "bottom center",
-                  toggleClass: "resetPosition",
-                  scrub: true,
-                },
-              })
-              .to(".section--six--container ", {
-                scrollTrigger: {
-                  trigger: ".section--six--container ",
-                  start: "top 80%",
-                  end: "bottom center",
-                  toggleClass: "resetPosition",
-                  scrub: true,
-                },
-            
-            });   
-        console.log("setupScrollAnimation");
+    if (width < 600) {
+      Object3d.scale.set(0.5, 0.5, 0.5); // Scale down for small screens
+      console.log("Scale set to 0.5 for small screens");
+    } else if (width < 900) {
+      Object3d.scale.set(0.75, 0.75, 0.75); // Medium scaling for medium screens
+      console.log("Scale set to 0.75 for medium screens");
+    } else {
+      Object3d.scale.set(1.8, 1.8, 1.8); // Default scaling for large screens
+      console.log("Scale set to 1 for large screens");
     }
 
-    let needsUpdate = true;
-    function onUpdate() {
-        needsUpdate  = true;
-        viewer.renderer.resetShadows();
-        viewer.setDirty();
-    }
+    onUpdate();
+  }
 
-    document.querySelectorAll(".button--footer")?.forEach((item) =>{
-        item.addEventListener("click", () => {
-            const container = document.getElementsByClassName("mainContainer");
-            container[0].scrollTo({top:0, left:0, behavior: 'smooth'});
+  window.addEventListener("resize", adjustModelScale);
+  adjustModelScale(); // Initial call to set the scale based on the current window size
 
-        });
+  document.querySelectorAll(".button--footer")?.forEach((item) => {
+    item.addEventListener("click", () => {
+      const container = document.getElementsByClassName("mainContainer");
+      container[0].scrollTo({ top: 0, left: 0, behavior: "smooth" });
     });
-
-
-
+  });
 }
 
 setupViewer();
