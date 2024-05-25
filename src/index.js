@@ -266,26 +266,26 @@ async function setupViewer() {
     viewer.setDirty();
   }
 
-  function adjustModelScale() {
-    const width = window.innerWidth;
-    console.log(`Window width: ${width}`); // Debugging log
+//   function adjustModelScale() {
+//     const width = window.innerWidth;
+//     console.log(`Window width: ${width}`); // Debugging log
 
-    if (width < 600) {
-      Object3d.scale.set(0.5, 0.5, 0.5); // Scale down for small screens
-      console.log("Scale set to 0.5 for small screens");
-    } else if (width < 900) {
-      Object3d.scale.set(0.75, 0.75, 0.75); // Medium scaling for medium screens
-      console.log("Scale set to 0.75 for medium screens");
-    } else {
-      Object3d.scale.set(1.8, 1.8, 1.8); // Default scaling for large screens
-      console.log("Scale set to 1 for large screens");
-    }
+//     if (width < 600) {
+//       Object3d.scale.set(0.5, 0.5, 0.5); // Scale down for small screens
+//       console.log("Scale set to 0.5 for small screens");
+//     } else if (width < 900) {
+//       Object3d.scale.set(0.75, 0.75, 0.75); // Medium scaling for medium screens
+//       console.log("Scale set to 0.75 for medium screens");
+//     } else {
+//       Object3d.scale.set(1.8, 1.8, 1.8); // Default scaling for large screens
+//       console.log("Scale set to 1 for large screens");
+//     }
 
-    onUpdate();
-  }
+//     onUpdate();
+//   }
 
-  window.addEventListener("resize", adjustModelScale);
-  adjustModelScale(); // Initial call to set the scale based on the current window size
+//   window.addEventListener("resize", adjustModelScale);
+//   adjustModelScale(); // Initial call to set the scale based on the current window size
 
   document.querySelectorAll(".button--footer")?.forEach((item) => {
     item.addEventListener("click", () => {
